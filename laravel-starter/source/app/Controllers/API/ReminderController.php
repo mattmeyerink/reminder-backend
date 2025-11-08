@@ -43,4 +43,11 @@ class ReminderController extends Controller
 
         return $updatedReminder;
     }
+    
+    public function delete(string $id) {
+        $reminder = Reminder::find($id);
+        $reminder->delete();
+
+        return redirect()->back()->with('success', 'Reminder was successfully deleted');
+    }
 }

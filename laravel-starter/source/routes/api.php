@@ -15,3 +15,4 @@ Route::post('/users', [UserController::class, 'create']);
 
 Route::post('/reminders', [ReminderController::class, 'create']);
 Route::put('/reminders/{id}', [ReminderController::class, 'update']);
+Route::delete('/reminders/{id}', [ReminderController::class, 'delete']);
