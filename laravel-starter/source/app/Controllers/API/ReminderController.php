@@ -45,4 +45,12 @@ class ReminderController extends Controller
 
         return response('Reminder successfully deleted', 200);
     }
+
+    public function search(Request $request) {
+        $searchQuery = $request->query('searchText', '');
+
+        $matchingReminders = Reminder::where('message', 'like', '%' . $searchQuery . '%')->get();
+        
+        return $matchingReminders;
+    }
 }
