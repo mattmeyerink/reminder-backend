@@ -18,3 +18,4 @@ Route::put('/reminders/{id}', [ReminderController::class, 'update']);
 Route::delete('/reminders/{id}', [ReminderController::class, 'delete']);
 
 Route::get('/reminders/search', [ReminderController::class, 'search']);
+Route::post('/reminders-in-range', [ReminderController::class, 'getRemindersInRange']);

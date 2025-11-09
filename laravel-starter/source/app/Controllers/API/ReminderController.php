@@ -53,4 +53,13 @@ class ReminderController extends Controller
         
         return $matchingReminders;
     }
+
+    public function getRemindersInRange(Request $request) {
+        $validated = $request->validate([
+            'start' => 'bail|required|int',
+            'end' => 'bail|required|int|gt:start'
+        ]);
+        
+        return [];
+    }
 }
