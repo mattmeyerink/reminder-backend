@@ -4,6 +4,7 @@ namespace App\Controllers\API;
 use App\Controllers\Controller;
 use App\Models\Reminder;
 use App\Resources\UserResource;
+use App\Rules\ReminderScheduleRule;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,11 +13,8 @@ class ReminderController extends Controller
 {
     public function create(Request $request) {
         $validated = $request->validate([
-            // TODO -> Better validation 
-            // Custom messages for each error
-            // A custom cron schedule validation function
-            'message' => 'required|string|max:255',
-            'schedule' => 'required|string|max:255',
+            'message' => 'bail|required|string|max:255',
+            'schedule' => ['bail', 'required', 'string', 'max:255', new ReminderScheduleRule],
         ]);
 
         $reminder = Reminder::create([
@@ -30,11 +28,8 @@ class ReminderController extends Controller
 
     public function update(Request $request, string $id) {
         $validated = $request->validate([
-            // TODO -> Better validation 
-            // Custom messages for each error
-            // A custom cron schedule validation function
-            'message' => 'required|string|max:255',
-            'schedule' => 'required|string|max:255',
+            'message' => 'bail|required|string|max:255',
+            'schedule' => ['bail', 'required', 'string', 'max:255', new ReminderScheduleRule],
         ]);
 
         $reminder = Reminder::find($id);
@@ -48,6 +43,6 @@ class ReminderController extends Controller
         $reminder = Reminder::find($id);
         $reminder->delete();
 
-        return redirect()->back()->with('success', 'Reminder was successfully deleted');
+        return response('Reminder successfully deleted', 200);
     }
 }
