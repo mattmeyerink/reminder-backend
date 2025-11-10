@@ -59,7 +59,16 @@ class ReminderController extends Controller
             'start' => 'bail|required|int',
             'end' => 'bail|required|int|gt:start'
         ]);
-        
-        return [];
+
+        $reminders = Reminder::all();
+
+        $remindersInRange = [];
+        for ($i = 0; $i < count($reminders); $i++) {
+            if ($reminders[$i]->isReminderInRange($validated['start'], $validated['end'])) {
+                $remindersInRange[] = $reminders[$i];
+            }
+        }
+
+        return $remindersInRange;
     }
 }
