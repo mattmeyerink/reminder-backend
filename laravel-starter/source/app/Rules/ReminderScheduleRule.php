@@ -39,7 +39,7 @@ class ReminderScheduleRule implements ValidationRule
             $fail('You must specify a valid minute in military time 0-59');
         }
 
-        if ($frequency == 'weekly' and (is_numeric($dayOfWeek) == FALSE or $dayOfWeek < 0 or $dayOfWeek > 6)) {
+        if ($frequency == 'weekly' and (is_numeric($dayOfWeek) == FALSE or $dayOfWeek < 1 or $dayOfWeek > 7)) {
             $fail('You must specify a valid day of the week for the weekly frequency');
         }
     }
