@@ -4,9 +4,14 @@ namespace App\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use App\Models\Reminder;
 
 class ReminderScheduleRule implements ValidationRule
 {
+    const MAX_VALID_HOUR = 23;
+    const MAX_VALID_MINUTE = 59;
+    const MAX_VALID_DAY_OF_WEEK = 7;
+
     /**
      * Run the validation rule.
      *
@@ -21,25 +26,25 @@ class ReminderScheduleRule implements ValidationRule
             $fail('Invalid cron string passed.');
         }
 
-        $frequency = $cronArray[0];
-        $dayOfWeek = $cronArray[1];
-        $dayOfMonth = $cronArray[2];
-        $hour = $cronArray[3];
-        $minute = $cronArray[4];
+        $frequency = $cronArray[Reminder::FREQUENCY_INDEX];
+        $dayOfWeek = $cronArray[Reminder::DAY_OF_WEEK_INDEX];
+        $dayOfMonth = $cronArray[Reminder::DAY_OF_MONTH_INDEX];
+        $hour = $cronArray[Reminder::HOUR_INDEX];
+        $minute = $cronArray[Reminder::MINUTE_INDEX];
 
-        if ($frequency != 'daily' and $frequency != 'weekly') {
+        if ($frequency != Reminder::DAILY_FREQUENCY and $frequency != Reminder::WEEKLY_FREQUENCY) {
             $fail('Invalid frequency passed.');
         }
 
-        if (is_numeric($hour) == FALSE or intval($hour) < 0 or intval($hour) > 23) {
+        if (is_numeric($hour) == FALSE or intval($hour) < 0 or intval($hour) > self::MAX_VALID_HOUR) {
             $fail('You must specify a valid hour in military time 0-23');
         }
 
-        if (is_numeric($minute) == FALSE or $minute < 0 or $minute > 59) {
+        if (is_numeric($minute) == FALSE or $minute < 0 or $minute > self::MAX_VALID_MINUTE) {
             $fail('You must specify a valid minute in military time 0-59');
         }
 
-        if ($frequency == 'weekly' and (is_numeric($dayOfWeek) == FALSE or $dayOfWeek < 1 or $dayOfWeek > 7)) {
+        if ($frequency == 'weekly' and (is_numeric($dayOfWeek) == FALSE or $dayOfWeek < 1 or $dayOfWeek > self::MAX_VALID_DAY_OF_WEEK)) {
             $fail('You must specify a valid day of the week for the weekly frequency');
         }
     }

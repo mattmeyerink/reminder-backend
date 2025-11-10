@@ -11,6 +11,18 @@ class Reminder extends Model
 {
     use HasFactory;
 
+    const FREQUENCY_INDEX = 0;
+    const DAY_OF_WEEK_INDEX = 1;
+    const DAY_OF_MONTH_INDEX = 2;
+    const HOUR_INDEX = 3;
+    const MINUTE_INDEX = 4;
+
+    const DAILY_FREQUENCY = 'daily';
+    const WEEKLY_FREQUENCY = 'weekly';
+
+    const SECONDS_PER_DAY = 86400;
+    const SECONDS_PER_WEEK = 604800;
+
     protected $fillable = [
         'message',
         'schedule'
@@ -24,13 +36,13 @@ class Reminder extends Model
     public function isReminderInRange(int $start, int $end) {
         $scheduleSplit = explode(' ', $this->schedule);
 
-        $frequency = $scheduleSplit[0];
+        $frequency = $scheduleSplit[self::FREQUENCY_INDEX];
 
-        if ($frequency == "daily") {
+        if ($frequency == self::DAILY_FREQUENCY) {
             return $this->isDailyReminderInRange($start, $end);
         }
 
-        if ($frequency == "weekly") {
+        if ($frequency == self::WEEKLY_FREQUENCY) {
             return $this->isWeeklyReminderInRange($start, $end);
         }
 
@@ -40,14 +52,14 @@ class Reminder extends Model
     private function isDailyReminderInRange(int $start, int $end) {
         // If the interval is greater than 24 hours all daily reminders
         // are in range.
-        if ($end - $start >= 86400) {
+        if ($end - $start >= self::SECONDS_PER_DAY) {
             return true;
         }
 
         $scheduleSplit = explode(' ', $this->schedule);
 
-        $hour = $scheduleSplit[3];
-        $minute = $scheduleSplit[4];
+        $hour = $scheduleSplit[self::HOUR_INDEX];
+        $minute = $scheduleSplit[self::MINUTE_INDEX];
 
         $startDateTime = new DateTime();
         $startDateTime->setTimestamp($start);
@@ -73,15 +85,15 @@ class Reminder extends Model
 
     private function isWeeklyReminderInRange(int $start, int $end) {
         // If the interval is greater than 1 week all weekly reminders are in range.
-        if ($end - $start >= 604800) {
+        if ($end - $start >= self::SECONDS_PER_WEEK) {
             return true;
         }
 
         $scheduleSplit = explode(' ', $this->schedule);
 
-        $dayOfWeek = $scheduleSplit[1];
-        $hour = $scheduleSplit[3];
-        $minute = $scheduleSplit[4];
+        $dayOfWeek = $scheduleSplit[self::DAY_OF_WEEK_INDEX];
+        $hour = $scheduleSplit[self::HOUR_INDEX];
+        $minute = $scheduleSplit[self::MINUTE_INDEX];
 
         $startDateTime = new DateTime();
         $startDateTime->setTimestamp($start);
