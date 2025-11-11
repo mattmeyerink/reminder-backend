@@ -33,6 +33,11 @@ class ReminderController extends Controller
         ]);
 
         $reminder = Reminder::find($id);
+
+        if (is_null($reminder)) {
+            return response('Failed to find reminder with id: ' . $id, 404);
+        }
+
         $reminder->update($validated);
         $updatedReminder = Reminder::find($id);
 
@@ -41,6 +46,11 @@ class ReminderController extends Controller
     
     public function delete(string $id) {
         $reminder = Reminder::find($id);
+
+        if (is_null($reminder)) {
+            return response('Failed to find reminder with id: ' . $id, 404);
+        }
+
         $reminder->delete();
 
         return response('Reminder successfully deleted', 200);
