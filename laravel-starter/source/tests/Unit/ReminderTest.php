@@ -177,4 +177,106 @@ class ReminderTest extends TestCase
 
         $this->assertTrue($isReminderInRange);
     }
+
+    public function test_monthly_reminder_larger_than_1_month_window() {
+        $reminder = new Reminder();
+        
+        $reminder->message = "Visit Hagrid";
+        $reminder->schedule = "monthly * 5 12 00";
+
+        // 11/10/25 - 12:00
+        $start = 1762776016;
+
+        // 12/20/25 - 12:00
+        $end = 1766232016;
+
+        $isReminderInRange = $reminder->isReminderInRange($start, $end);
+
+        $this->assertTrue($isReminderInRange);
+    }
+
+    public function test_monthly_reminder_outside_multimonth_range() {
+        $reminder = new Reminder();
+        
+        $reminder->message = "Visit Hagrid";
+        $reminder->schedule = "monthly * 15 12 00";
+
+        // 11/25/25 - 12:00
+        $start = 1764072016;
+
+        // 12/5/25 - 12:00
+        $end = 1764936016;
+
+        $isReminderInRange = $reminder->isReminderInRange($start, $end);
+
+        $this->assertTrue($isReminderInRange);
+    }
+
+    public function test_monthly_reminder_inside_multimonth_range() {
+        $reminder = new Reminder();
+        
+        $reminder->message = "Visit Hagrid";
+        $reminder->schedule = "monthly * 3 12 00";
+
+        // 11/25/25 - 12:00
+        $start = 1764072016;
+
+        // 12/5/25 - 12:00
+        $end = 1764936016;
+
+        $isReminderInRange = $reminder->isReminderInRange($start, $end);
+
+        $this->assertTrue($isReminderInRange);
+    }
+
+    public function test_monthly_reminder_before_single_month_range() {
+        $reminder = new Reminder();
+        
+        $reminder->message = "Visit Hagrid";
+        $reminder->schedule = "monthly * 3 12 00";
+
+        // 12/5/25 - 12:00
+        $start = 1764936016;
+
+        // 12/15/25 - 12:00
+        $end = 1765800016;
+
+        $isReminderInRange = $reminder->isReminderInRange($start, $end);
+
+        $this->assertTrue($isReminderInRange);
+    }
+
+    public function test_monthly_reminder_after_single_month_range() {
+        $reminder = new Reminder();
+        
+        $reminder->message = "Visit Hagrid";
+        $reminder->schedule = "monthly * 20 12 00";
+
+        // 12/5/25 - 12:00
+        $start = 1764936016;
+
+        // 12/15/25 - 12:00
+        $end = 1765800016;
+
+        $isReminderInRange = $reminder->isReminderInRange($start, $end);
+
+        $this->assertTrue($isReminderInRange);
+    }
+
+    public function test_monthly_reminder_inside_single_month_range() {
+        $reminder = new Reminder();
+        
+        $reminder->message = "Visit Hagrid";
+        $reminder->schedule = "monthly * 8 12 00";
+
+        // 12/5/25 - 12:00
+        $start = 1764936016;
+
+        // 12/15/25 - 12:00
+        $end = 1765800016;
+
+        $isReminderInRange = $reminder->isReminderInRange($start, $end);
+
+        $this->assertTrue($isReminderInRange);
+    }
 }

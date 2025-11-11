@@ -19,9 +19,11 @@ class Reminder extends Model
 
     const DAILY_FREQUENCY = 'daily';
     const WEEKLY_FREQUENCY = 'weekly';
+    const MONTHLY_FREQUENCY = 'monthly';
 
     const SECONDS_PER_DAY = 86400;
     const SECONDS_PER_WEEK = 604800;
+    const SECONDS_PER_31_DAYS = self::SECONDS_PER_DAY * 31;
 
     protected $fillable = [
         'message',
@@ -44,6 +46,10 @@ class Reminder extends Model
 
         if ($frequency == self::WEEKLY_FREQUENCY) {
             return $this->isWeeklyReminderInRange($start, $end);
+        }
+
+        if ($frequency == self::MONTHLY_FREQUENCY) {
+            return $this->isMonthlyReminderInRange($start, $end);
         }
 
         return false;
@@ -110,5 +116,48 @@ class Reminder extends Model
         }
 
         return $currentDateTime >= $startDateTime and $currentDateTime <= $endDateTime;
+    }
+
+    private function isMonthlyReminderInRange(int $start, int $end) {
+        // If the interval is greater than 31 days then all monthly reminders are within range.
+        if ($end - $start >= self::SECONDS_PER_31_DAYS) {
+            return true;
+        }
+
+        $scheduleSplit = explode(' ', $this->schedule);
+
+        $dayOfMonth = $scheduleSplit[self::DAY_OF_MONTH_INDEX];
+        $hour = $scheduleSplit[self::HOUR_INDEX];
+        $minute = $scheduleSplit[self::MINUTE_INDEX];
+
+        $startDateTime = new DateTime();
+        $startDateTime->setTimestamp($start);
+
+        $endDateTime = new DateTime();
+        $endDateTime->setTimestamp($end);
+
+        $currentDateTime = new DateTime();
+        $currentDateTime->setTimestamp($start);
+        $currentDateTime->setTime($hour, $minute);
+
+        // If the time on the reminder is before the time in the start 
+        // timestamp we need to start the loop on the next day.
+        if ($currentDateTime < $startDateTime) {
+            $currentDateTime->add(DateInterval::createFromDateString('1 day'));
+        }
+
+        // Loop through looking for the correct day of the month until we pass
+        // the end date. The loop utilizing the DateTime add function allows
+        // us to avoid bugs with months with 28/29/30/31 days that would happen
+        // if we hard set currentDateTime to the reminder's dayOfMonth.
+        while ($currentDateTime <= $endDateTime) {
+            if (intval($currentDateTime->format('j')) == intval($dayOfMonth)) {
+                return true;
+            }
+
+            $currentDateTime->add(DateInterval::createFromDateString('1 day'));
+        }
+
+        return false;
     }
 }

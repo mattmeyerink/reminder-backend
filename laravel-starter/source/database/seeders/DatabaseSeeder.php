@@ -59,5 +59,13 @@ class DatabaseSeeder extends Seeder
             'message' => 'Write to Sirius',
             'schedule' => 'weekly 6 * 13 30'
         ]);
+        Reminder::factory()->create([
+            'message' => 'Say hi to the giant squid',
+            'schedule' => 'monthly * 29 9 00'
+        ]);
+        Reminder::factory()->create([
+            'message' => 'Send an owl back home',
+            'schedule' => 'monthly * 15 12 00'
+        ]);
     }
 }
