@@ -46,13 +46,13 @@ class ReminderTest extends TestCase
         $reminder = new Reminder(); 
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "weekly 7 * 1 30";
+        $reminder->schedule = "weekly 7 * 13 30";
 
         // Monday 11/10/25 - 12:00
         $start = 1762776058;
 
-        // Saturday 11/25/25 - 12:00
-        $end = 1763208058;
+        // Saturday 11/16/25 - 12:00
+        $end = 1763294421;
 
         $isReminderInRange = $reminder->isReminderInRange($start, $end);
         
@@ -80,7 +80,7 @@ class ReminderTest extends TestCase
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "daily 1 * 1 30";
+        $reminder->schedule = "daily * * 1 30";
 
         // 11/10/25 - 12:00
         $start = 1762776058;
@@ -97,7 +97,7 @@ class ReminderTest extends TestCase
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "daily 1 * 22 00";
+        $reminder->schedule = "daily * * 22 00";
 
         // 11/10/25 - 23:00
         $start = 1762815658;
@@ -114,7 +114,7 @@ class ReminderTest extends TestCase
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "daily 1 * 8 00";
+        $reminder->schedule = "daily * * 23 05";
 
         // 11/10/25 - 23:00
         $start = 1762815658;
@@ -131,7 +131,7 @@ class ReminderTest extends TestCase
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "daily 1 * 8 00";
+        $reminder->schedule = "daily * * 10 30";
 
         // 11/11/25 - 11:00
         $start = 1762858858;
@@ -148,7 +148,7 @@ class ReminderTest extends TestCase
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "daily 1 * 16 00";
+        $reminder->schedule = "daily 1 * 15 30";
 
         // 11/11/25 - 11:00
         $start = 1762858858;
@@ -165,7 +165,7 @@ class ReminderTest extends TestCase
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "daily 1 * 12 00";
+        $reminder->schedule = "daily 1 * 14 59";
 
         // 11/11/25 - 11:00
         $start = 1762858858;
@@ -199,7 +199,7 @@ class ReminderTest extends TestCase
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "monthly * 15 12 00";
+        $reminder->schedule = "monthly * 25 11 00";
 
         // 11/25/25 - 12:00
         $start = 1764072016;
@@ -209,14 +209,14 @@ class ReminderTest extends TestCase
 
         $isReminderInRange = $reminder->isReminderInRange($start, $end);
 
-        $this->assertTrue($isReminderInRange);
+        $this->assertFalse($isReminderInRange);
     }
 
     public function test_monthly_reminder_inside_multimonth_range() {
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "monthly * 3 12 00";
+        $reminder->schedule = "monthly * 25 13 00";
 
         // 11/25/25 - 12:00
         $start = 1764072016;
@@ -233,7 +233,7 @@ class ReminderTest extends TestCase
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "monthly * 3 12 00";
+        $reminder->schedule = "monthly * 5 11 00";
 
         // 12/5/25 - 12:00
         $start = 1764936016;
@@ -243,14 +243,14 @@ class ReminderTest extends TestCase
 
         $isReminderInRange = $reminder->isReminderInRange($start, $end);
 
-        $this->assertTrue($isReminderInRange);
+        $this->assertFalse($isReminderInRange);
     }
 
     public function test_monthly_reminder_after_single_month_range() {
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "monthly * 20 12 00";
+        $reminder->schedule = "monthly * 15 13 00";
 
         // 12/5/25 - 12:00
         $start = 1764936016;
@@ -260,14 +260,14 @@ class ReminderTest extends TestCase
 
         $isReminderInRange = $reminder->isReminderInRange($start, $end);
 
-        $this->assertTrue($isReminderInRange);
+        $this->assertFalse($isReminderInRange);
     }
 
     public function test_monthly_reminder_inside_single_month_range() {
         $reminder = new Reminder();
         
         $reminder->message = "Visit Hagrid";
-        $reminder->schedule = "monthly * 8 12 00";
+        $reminder->schedule = "monthly * 5 12 05";
 
         // 12/5/25 - 12:00
         $start = 1764936016;
